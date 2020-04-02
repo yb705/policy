@@ -6,7 +6,7 @@ import winreg
 from xlutils.copy import copy
 violation_types={'x':'吸粉','f':'否','y':'引流','s':'涉黄','sz':'刷钻','sc':'首次','qz':'欺诈','qt':'其它','w':'无微聊','':'','save':'save','q':'quit','c':'correct'}
 print("审核规则：",end='')
-print("['x':'吸粉','f':'否','y':'引流','s':'涉黄','sz':'刷钻','sc':'首次','qz':'欺诈','qt':'其它','w':'无微聊','c':'修改']")
+print("['x':'吸粉','f':'否','y':'引流','s':'涉黄','sz':'刷钻','sc':'首次','qz':'欺诈','qt':'其它','w':'无微聊','c':'修改','save':'临时保存','q':'退出']")
 real_address = winreg.OpenKey(winreg.HKEY_CURRENT_USER,r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders',)
 file_address=winreg.QueryValueEx(real_address, "Desktop")[0]
 file_address+='\\'
