@@ -4,19 +4,20 @@ import xlwt
 import time
 import winreg
 from xlutils.copy import copy
-violation_types={'x':'吸粉','f':'否','y':'引流','s':'涉黄','sz':'刷钻','sc':'首次','qz':'欺诈','qt':'其它','w':'无微聊','':'','save':'save','q':'quit'}
+violation_types={'x':'吸粉','f':'否','y':'引流','s':'涉黄','sz':'刷钻','sc':'首次','qz':'欺诈','qt':'其它','w':'无微聊','':'','save':'save','q':'quit','c':'correct'}
 print("审核规则：",end='')
-print("['x':'吸粉','f':'否','y':'引流','s':'涉黄','sz':'刷钻','sc':'首次','qz':'欺诈','qt':'其它','w':'无微聊']")
+print("['x':'吸粉','f':'否','y':'引流','s':'涉黄','sz':'刷钻','sc':'首次','qz':'欺诈','qt':'其它','w':'无微聊','c':'修改']")
 real_address = winreg.OpenKey(winreg.HKEY_CURRENT_USER,r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders',)
 file_address=winreg.QueryValueEx(real_address, "Desktop")[0]
 file_address+='\\'
-file=input('请输入审核文件名称（不要忘记后缀.xlsx或者.xls）:')
+file=input('请输入审核文件名称（无需添加后缀.xlsx或者.xls）:')
+filename=file_address+file+".xlsx"
 while True:
 	try:
-		filename=file_address+file
 		wb=xlrd.open_workbook(filename)
 	except FileNotFoundError:
-		file=input('桌面查找不到该文件，请重新输入审核文件审核文件名称（不要忘记后缀.xlsx或者.xls）:')
+		file=input('桌面查找不到该文件，请重新输入审核文件名称（请添加后缀.xlsx或者.xls）:')
+		filename=file_address+file
 	else:
 		break
 rb=copy(wb)
@@ -82,6 +83,8 @@ def excel_output(sub,n):
 	elif sub=='无微聊':
 		sheet2.write(n,int(col_output)-1, '')
 		sheet2.write(n,int(col_output)+1, sub)
+	elif sub=='quit':
+		break
 	else:
 		sheet2.write(n,int(col_output)-1, '是')
 		sheet2.write(n,int(col_output), sub)
@@ -91,11 +94,20 @@ for i in range(int(row_number)-1,sheet1.nrows):
 	inquire(str(int(cols[i])))
 	key=input('输入违规类型(第'+str(n)+'条):')
 	sub=check(key)
-	if sub=='quit':
-		break
-	elif sub=='save':
+	if sub=='save':
 		rb.save('临时保存.xls')
 		key=input('保存完毕，请继续输入本条id的违规类型:')
+		sub=check(key)
+		excel_output(sub,i)
+	if sub=='correct':
+		number_correct=input("请输入修改第几条：")
+		m=i-(n-int(number_correct))
+		inquire(str(int(cols[m])))
+		key=input('输入违规类型:')
+		sub=check(key)
+		excel_output(sub,m)
+		inquire(str(int(cols[i])))
+		key=input('修改完毕，请继续输入本条id的违规类型:')
 		sub=check(key)
 		excel_output(sub,i)
 	else:
